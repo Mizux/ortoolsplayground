@@ -96,7 +96,7 @@ def add_energy_dimension(routing, manager, data,
         True,  # start cumul to zero
         energy_tracker)
     energy_dimension = routing.GetDimensionOrDie(energy_tracker)
-    energy_dimension.SetGlobalSpanCostCoefficient(10000)
+    #energy_dimension.SetGlobalSpanCostCoefficient(10000)
 
 
 ###########
