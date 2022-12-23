@@ -221,9 +221,9 @@ def ormain():
     routing.SetArcCostEvaluatorOfAllVehicles(time_evaluator_index)
 
     # Make some evse nodes optional
-    penalty = 500000
-    routing.AddDisjunction([manager.NodeToIndex(4)], penalty)
-    routing.AddDisjunction([manager.NodeToIndex(5)], penalty)
+    penalty = 500_000
+    routing.AddDisjunction([manager.NodeToIndex(4),
+                            manager.NodeToIndex(5)], 2 * penalty, 2)
     # routing.AddDisjunction([manager.NodeToIndex(8)], penalty)
     # routing.AddDisjunction([manager.NodeToIndex(9)], penalty)
     #
