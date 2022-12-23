@@ -88,12 +88,11 @@ def add_energy_dimension(routing, manager, data,
                          energy_transit_callback_index):
     # Add energy consumption & battery charging
     energy_tracker = 'Energy'
+    max_battery = data['battery_capacities']
     routing.AddDimension(
         energy_transit_callback_index,
-        max(data['battery_capacities']
-            ),  # max capacity slack is equal to max vehicle capacity
-        # 0,
-        max(data['battery_capacities']),  # vehicle maximum energy per route
+        max_battery,  # max capacity slack is equal to max vehicle capacity
+        max_battery,  # vehicle maximum energy per route
         True,  # start cumul to zero
         energy_tracker)
     energy_dimension = routing.GetDimensionOrDie(energy_tracker)
