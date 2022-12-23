@@ -38,7 +38,7 @@ def add_time_window_constraints(routing, manager, data, time_evaluator):
     max_time = data['vehicle_max_time']
     routing.AddDimension(
         time_evaluator,
-        30,  # allow waiting time
+        max_time,  # allow waiting time
         max_time,  # maximum time per vehicle
         False,  # don't force start cumul to zero since we are giving TW to start nodes
         time)
