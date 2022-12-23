@@ -222,8 +222,13 @@ def ormain():
 
     # Make some evse nodes optional
     penalty = 500_000
-    routing.AddDisjunction([manager.NodeToIndex(4),
-                            manager.NodeToIndex(5)], 2 * penalty, 2)
+
+    four = manager.NodeToIndex(4)
+    five = manager.NodeToIndex(5)
+    #routing.AddDisjunction([four, five], 2 * penalty, 2)
+    routing.solver().Add(routing.VehicleVar(four) == routing.VehicleVar(five))
+    time_dimension = routing.GetDimensionOrDie('Time')
+    routing.solver().Add(time_dimension.CumulVar(four) < time_dimension.CumulVar(five))
     # routing.AddDisjunction([manager.NodeToIndex(8)], penalty)
     # routing.AddDisjunction([manager.NodeToIndex(9)], penalty)
     #
