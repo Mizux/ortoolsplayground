@@ -263,7 +263,7 @@ def ormain():
     # parameters.local_search_operators.use_inactive_lns = pywrapcp.BOOL_FALSE
 
     parameters.time_limit.seconds = 5
-    parameters.use_full_propagation = True
+    #parameters.use_full_propagation = True
     parameters.log_search = True
 
     # Solve the problem with or without an initial solution
