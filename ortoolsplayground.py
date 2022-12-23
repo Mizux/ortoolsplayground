@@ -264,7 +264,7 @@ def ormain():
 
     parameters.time_limit.seconds = 5
     #parameters.use_full_propagation = True
-    parameters.log_search = True
+    #parameters.log_search = True
 
     # Solve the problem with or without an initial solution
     routing.CloseModelWithParameters(parameters)
