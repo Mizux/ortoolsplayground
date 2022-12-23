@@ -255,12 +255,12 @@ def ormain():
     # Solve the problem with or without an initial solution
     routing.CloseModelWithParameters(parameters)
 
-    ## [START print_initial_solution]
-    initial_solution = routing.ReadAssignmentFromRoutes(
-        data['initial_routes'], True)
-    print('Initial solution:')
-    print_solution(data, manager, routing, initial_solution)
-    print()
+    # Set Initial Solution
+    #initial_solution = routing.ReadAssignmentFromRoutes(
+    #    data['initial_routes'], True)
+    #print('Initial solution:')
+    #print_solution(data, manager, routing, initial_solution)
+    #print()
 
     solution = routing.SolveWithParameters(parameters)
     # solution = routing.SolveFromAssignmentWithParameters(initial_solution, parameters)
