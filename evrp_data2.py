@@ -3,22 +3,26 @@ def create_data_model():
 
     data = {}
 
+    maxt = 200
+    maxb = 30
+
+    # (1) <-> recharge station (4-5) is forbidden
     data['time_matrix'] = [
-        [0, 4, 9, 5, 100, 100],
-        [4, 0, 5, 11, 100, 100],
-        [9, 5, 0, 6, 6, 100],
-        [5, 20, 20, 0, 10, 100],
-        [100, 100, 10, 10, 0, 2],
-        [100, 100, 6, 6, 100, 0],
+        [0, 4, 9, 5, maxt, maxt],
+        [4, 0, 5, 11, 12, maxt],
+        [9, 5, 0, 6, 6, maxt],
+        [5, 11, 6, 0, 10, maxt],
+        [maxt, maxt, maxt, maxt, 0, 2],
+        [maxt, 12, 6, 10, maxt, 0],
     ]
 
     data['energy_matrix'] = [
-        [0, 4, 9, 5, 100, 100],
-        [4, 0, 5, 11, 100, 100],
-        [9, 5, 0, 6, 6, 100],
-        [5, 11, 6, 0, 3, 100],
-        [100, 100, 10, 10, 0, -30],
-        [100, 100, 6, 6, 100, 0],
+        [0, 4, 9, 5, maxb, maxb],
+        [4, 0, 5, 11, 12, maxb],
+        [9, 5, 0, 6, 6, maxb],
+        [5, 11, 6, 0, 3, maxb],
+        [maxb, maxb, maxb, maxb, 0, -30],
+        [maxb, 12, 6, 3, maxb, 0],
     ]
 
     data['time_windows'] = [
@@ -33,9 +37,9 @@ def create_data_model():
     data['num_vehicles'] = 1
 
     # battery capacities correspond to maximum energy consumption by the respective ev before it needs to recharge
-    data['battery_capacities'] = [30]
+    data['vehicle_max_time'] = maxt
 
-    data['vehicle_max_time'] = 200
+    data['battery_capacities'] = maxb
 
     # list of evse locations from the initial matrix, used to generate the modified energy and time matrices with duplicate evse nodes
     data['evse_nodes'] = [
