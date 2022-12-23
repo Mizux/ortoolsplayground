@@ -241,6 +241,14 @@ def ormain():
     # evse_end_index = manager.NodeToIndex(9)
     # routing.solver().Add(routing.VehicleVar(evse_start_index) == routing.VehicleVar(evse_end_index))
 
+    # Instantiate route start and end times to produce feasible times.
+    energy_dimension = routing.GetDimensionOrDie('Energy')
+    for i in range(data['num_vehicles']):
+        routing.AddVariableMinimizedByFinalizer(
+            energy_dimension.CumulVar(routing.Start(i)))
+        routing.AddVariableMinimizedByFinalizer(
+            energy_dimension.CumulVar(routing.End(i)))
+
     # Setting search parameters
 
     parameters = pywrapcp.DefaultRoutingSearchParameters()
