@@ -27,11 +27,11 @@ def create_data_model():
 
     data['time_windows'] = [
         (0, 0),  # depot
-        (3, 20),  # 1
-        (6, 20),  # 2
-        (10, 20),  # 3
-        (0, 40),  # 4
-        (0, 60)  #5
+        (3, maxt),  # 1
+        (6, maxt),  # 2
+        (10, maxt),  # 3
+        (0, maxt),  # 4 charging in
+        (0, maxt),  # 5 charging out
     ]
 
     data['num_vehicles'] = 1
