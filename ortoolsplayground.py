@@ -270,11 +270,11 @@ def ormain():
     routing.CloseModelWithParameters(parameters)
 
     # Set Initial Solution
-    #initial_solution = routing.ReadAssignmentFromRoutes(
-    #    data['initial_routes'], True)
-    #print('Initial solution:')
-    #print_solution(data, manager, routing, initial_solution)
-    #print()
+    initial_solution = routing.ReadAssignmentFromRoutes(
+        data['initial_routes'], True)
+    print('Initial solution:')
+    print_solution(data, manager, routing, initial_solution)
+    print()
 
     solution = routing.SolveWithParameters(parameters)
     # solution = routing.SolveFromAssignmentWithParameters(initial_solution, parameters)

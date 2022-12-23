@@ -52,7 +52,7 @@ def create_data_model():
 
     # [START initial_routes]
     data['initial_routes'] = [
-        [1, 2, 4, 5, 3],  # vehicle 0
+        [3, 4, 5, 1, 2],  # vehicle 0
     ]
     # [END initial_routes]
     return data
