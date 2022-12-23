@@ -201,6 +201,7 @@ def ormain():
 
     # Set model parameters
     model_parameters = pywrapcp.DefaultRoutingModelParameters()
+    #model_parameters.solver_parameters.trace_propagation = True
 
     # Make the routing model instance.
     routing = pywrapcp.RoutingModel(manager, model_parameters)
@@ -256,11 +257,6 @@ def ormain():
     parameters.time_limit.seconds = 5
     parameters.use_full_propagation = True
     parameters.log_search = True
-
-    # The solver parameters can be accessed from the model parameters. For example :
-    model_parameters.solver_parameters.CopyFrom(
-        pywrapcp.Solver.DefaultSolverParameters())
-    model_parameters.solver_parameters.trace_propagation = True
 
     # Solve the problem with or without an initial solution
 
