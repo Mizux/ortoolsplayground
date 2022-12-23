@@ -236,12 +236,6 @@ def ormain():
     # evse_end_index = manager.NodeToIndex(9)
     # routing.solver().Add(routing.VehicleVar(evse_start_index) == routing.VehicleVar(evse_end_index))
 
-    # [START print_initial_solution]
-    #  initial_solution = routing.ReadAssignmentFromRoutes(data['initial_routes'],True)
-    #  print('Initial solution:')
-    #  print_solution(data, manager, routing, initial_solution)
-    #  print('\n')
-
     # Setting search parameters
 
     parameters = pywrapcp.DefaultRoutingSearchParameters()
@@ -259,6 +253,14 @@ def ormain():
     parameters.log_search = True
 
     # Solve the problem with or without an initial solution
+    routing.CloseModelWithParameters(parameters)
+
+    ## [START print_initial_solution]
+    initial_solution = routing.ReadAssignmentFromRoutes(
+        data['initial_routes'], True)
+    print('Initial solution:')
+    print_solution(data, manager, routing, initial_solution)
+    print()
 
     solution = routing.SolveWithParameters(parameters)
     # solution = routing.SolveFromAssignmentWithParameters(initial_solution, parameters)
