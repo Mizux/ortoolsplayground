@@ -1,22 +1,17 @@
 # OR_tools playground
 
-
-
 from ortools.constraint_solver import pywrapcp
 from ortools.constraint_solver import routing_enums_pb2
 from functools import partial
 import evrp_data2 as evrpd
-
-
 """Electrical Vehicles Routing Problem (VRP) with Time Windows"""
-
-
 
 ###########################
 # Problem Data Definition #
 ###########################
-
 """Stores the data for the problem"""
+
+
 def create_data_model():
     """Stores the data for the problem"""
     return evrpd.create_data_model()
@@ -26,8 +21,8 @@ def create_data_model():
 # Problem Constraints #
 #######################
 
-
 # Create and register a time evaluator
+
 
 def time_evaluator(manager, data, from_index, to_index):
     """Returns the travel time between the two nodes."""
@@ -35,7 +30,6 @@ def time_evaluator(manager, data, from_index, to_index):
     from_node = manager.IndexToNode(from_index)
     to_node = manager.IndexToNode(to_index)
     return data['time_matrix'][from_node][to_node]
-
 
 
 def add_time_window_constraints(routing, manager, data, time_evaluator):
@@ -68,6 +62,7 @@ def add_time_window_constraints(routing, manager, data, time_evaluator):
         # Warning: Slack var is not defined for vehicle's end node
         #routing.AddToAssignment(time_dimension.SlackVar(self.routing.End(vehicle_id)))
 
+
 # # Add Time Windows constraint.
 # time = 'Time'
 # routing.AddDimension(
@@ -78,7 +73,8 @@ def add_time_window_constraints(routing, manager, data, time_evaluator):
 #     time)
 # time_dimension = routing.GetDimensionOrDie(time)
 
-   # Create and register an energy consumption transit callback.
+# Create and register an energy consumption transit callback.
+
 
 def energy_evaluator(manager, data, from_index, to_index):
     """Returns the energy consumed by the travel between the two nodes."""
@@ -88,24 +84,26 @@ def energy_evaluator(manager, data, from_index, to_index):
     return data['energy_matrix'][from_node][to_node]
 
 
-
-def add_energy_dimension(routing, manager, data, energy_transit_callback_index):
+def add_energy_dimension(routing, manager, data,
+                         energy_transit_callback_index):
     # Add energy consumption & battery charging
     energy_tracker = 'Energy'
-    routing.AddDimension(energy_transit_callback_index,
-                                                      max(data['battery_capacities']), # max capacity slack is equal to max vehicle capacity
-                                                      # 0,
-                                                      max(data['battery_capacities']),  # vehicle maximum energy per route
-                                                      True,  # start cumul to zero
-                                                      energy_tracker)
+    routing.AddDimension(
+        energy_transit_callback_index,
+        max(data['battery_capacities']
+            ),  # max capacity slack is equal to max vehicle capacity
+        # 0,
+        max(data['battery_capacities']),  # vehicle maximum energy per route
+        True,  # start cumul to zero
+        energy_tracker)
     energy_dimension = routing.GetDimensionOrDie(energy_tracker)
     energy_dimension.SetGlobalSpanCostCoefficient(10000)
-
 
 
 ###########
 # Print & store #
 ###########
+
 
 def get_cumul_data(solution, routing, dimension):
     """Get cumulative data from a dimension and store it in an array."""
@@ -153,6 +151,7 @@ def print_solution(routes, cumul_data):
 # Note that this prints the energy consumption at the end of routes
 # which is not the same as energy consumption if the vehicle got recharged
 
+
 def print_solution(data, manager, routing, solution):
     """Prints solution on console."""
     print(f'Objective: {solution.ObjectiveValue()}')
@@ -167,17 +166,21 @@ def print_solution(data, manager, routing, solution):
         while not routing.IsEnd(index):
             time_var = time_dimension.CumulVar(index)
             energy_var = energy_dimension.CumulVar(index)
-            plan_output += '{0} Time({1},{2}) Energy({3},{4}) -> '.format(manager.IndexToNode(index),
-                                                                        solution.Min(time_var), solution.Max(time_var),
-                                                                        solution.Min(energy_var), solution.Max(energy_var))
+            plan_output += '{0} Time({1},{2}) Energy({3},{4}) -> '.format(
+                manager.IndexToNode(index), solution.Min(time_var),
+                solution.Max(time_var), solution.Min(energy_var),
+                solution.Max(energy_var))
             index = solution.Value(routing.NextVar(index))
         time_var = time_dimension.CumulVar(index)
         energy_var = energy_dimension.CumulVar(index)
-        plan_output += '{0} Time({1},{2}) Energy({3},{4})\n'.format(manager.IndexToNode(index),
-                                                    solution.Min(time_var), solution.Max(time_var),
-                                                    solution.Min(energy_var), solution.Max(energy_var))
-        plan_output += 'Time of the route: {}min\n'.format(solution.Min(time_var))
-        plan_output += 'Net energy spent: {} energy units\n'.format(solution.Min(energy_var))
+        plan_output += '{0} Time({1},{2}) Energy({3},{4})\n'.format(
+            manager.IndexToNode(index), solution.Min(time_var),
+            solution.Max(time_var), solution.Min(energy_var),
+            solution.Max(energy_var))
+        plan_output += 'Time of the route: {}min\n'.format(
+            solution.Min(time_var))
+        plan_output += 'Net energy spent: {} energy units\n'.format(
+            solution.Min(energy_var))
         print(plan_output)
         total_time = max(total_time, solution.Min(time_var))
         sum_of_times += solution.Min(time_var)
@@ -200,28 +203,25 @@ def ormain():
     # Set model parameters
     model_parameters = pywrapcp.DefaultRoutingModelParameters()
 
-
     # Make the routing model instance.
     routing = pywrapcp.RoutingModel(manager, model_parameters)
 
-
     # Add time constraints
-    time_evaluator_index = routing.RegisterTransitCallback(partial(time_evaluator, manager,data))
+    time_evaluator_index = routing.RegisterTransitCallback(
+        partial(time_evaluator, manager, data))
     add_time_window_constraints(routing, manager, data, time_evaluator_index)
 
     # Add energy constraints
-    energy_evaluator_index = routing.RegisterTransitCallback(partial(energy_evaluator, manager,data))
+    energy_evaluator_index = routing.RegisterTransitCallback(
+        partial(energy_evaluator, manager, data))
     add_energy_dimension(routing, manager, data, energy_evaluator_index)
-
 
     # Define cost of each arc.
     # For now the cost is only dependent on time
     routing.SetArcCostEvaluatorOfAllVehicles(time_evaluator_index)
 
-
-
     # Make some evse nodes optional
-    penalty=500000
+    penalty = 500000
     routing.AddDisjunction([manager.NodeToIndex(4)], penalty)
     routing.AddDisjunction([manager.NodeToIndex(5)], penalty)
     # routing.AddDisjunction([manager.NodeToIndex(8)], penalty)
@@ -231,19 +231,16 @@ def ormain():
     # routing.AddDisjunction([manager.NodeToIndex(4)], penalty)
     # routing.AddDisjunction([manager.NodeToIndex(7)], penalty)
 
-
     # Link evse nodes: if a vehicle goes to neither or both
     # evse_start_index = manager.NodeToIndex(8)
     # evse_end_index = manager.NodeToIndex(9)
     # routing.solver().Add(routing.VehicleVar(evse_start_index) == routing.VehicleVar(evse_end_index))
 
-
-   # [START print_initial_solution]
-   #  initial_solution = routing.ReadAssignmentFromRoutes(data['initial_routes'],True)
-   #  print('Initial solution:')
-   #  print_solution(data, manager, routing, initial_solution)
-   #  print('\n')
-
+    # [START print_initial_solution]
+    #  initial_solution = routing.ReadAssignmentFromRoutes(data['initial_routes'],True)
+    #  print('Initial solution:')
+    #  print_solution(data, manager, routing, initial_solution)
+    #  print('\n')
 
     # Setting search parameters
 
@@ -262,10 +259,9 @@ def ormain():
     parameters.log_search = True
 
     # The solver parameters can be accessed from the model parameters. For example :
-    model_parameters.solver_parameters.CopyFrom(pywrapcp.Solver.DefaultSolverParameters())
+    model_parameters.solver_parameters.CopyFrom(
+        pywrapcp.Solver.DefaultSolverParameters())
     model_parameters.solver_parameters.trace_propagation = True
-
-
 
     # Solve the problem with or without an initial solution
 
