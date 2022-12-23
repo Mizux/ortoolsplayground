@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # This is a sample Python script.
 
 # Press Maj+F10 to execute it or replace it with your code.
